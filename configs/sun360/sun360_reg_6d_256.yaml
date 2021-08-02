@@ -1,0 +1,68 @@
+data:
+  type: datasets.pairwise_dataloader
+  num_workers: 10
+  height: 256
+  train:
+    batch_size: 20
+    path: "data/sun360"
+    pairs_file: "metadata/sun360/train_pair_rotation.npy"
+  val:
+    batch_size: 20
+    path: "data/sun360"
+    pairs_file: "metadata/sun360/test_pair_rotation.npy"
+
+viz:
+  log_freq: 10
+  viz_freq: 75000
+  save_freq: 30000
+  val_freq: 10000
+
+# validation options
+val:
+  run_val_during_training: True
+  save_val_results: False
+  eval_classification: False
+  eval_sampling: False
+  batch_size: 100
+
+trainer:
+  type: trainers.rotation_trainer
+  epochs: 20
+  seed: 100
+  pairwise_type: 'concat'
+  classification: False
+  opt:
+    type: 'adam'
+    lr: 1e-4  #  use default learning rate
+    beta1: 0.9
+    beta2: 0.999
+    momentum: 0.9  # for SGD
+    weight_decay: 0.
+    scheduler: 'linear'
+    step_epoch: 10
+
+models:
+  encoder:
+    type: models.encoder.resnet_encoder
+    block: 1 # 0 basic, 1 bottleneck
+    num_blocks: 3-3-3
+  rotationnet:
+    type: models.rotationnet.rotation_net
+    block: 1 # 0 basic, 1 bottleneck
+    num_blocks: 1-1
+    zdim: 512
+    out_rotation_mode: 'ortho6d'
+  rotationnet_y:
+    type: models.rotationnet.rotation_net
+    block: 1 # 0 basic, 1 bottleneck
+    num_blocks: 1-1
+    zdim: 512
+    out_rotation_mode: 'ortho6d'
+  rotationnet_z:
+    type: models.rotationnet.rotation_net
+    block: 1 # 0 basic, 1 bottleneck
+    num_blocks: 1-1
+    zdim: 512
+    out_rotation_mode: 'ortho6d'
+
+

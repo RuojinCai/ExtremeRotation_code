@@ -1,0 +1,79 @@
+data:
+  type: datasets.pairwise_dataloader
+  num_workers: 10
+  height: 128
+  train:
+    batch_size: 20
+    path: "data/streetlearn/"
+    pairs_file: "metadata/streetlearn/train_pair_rotation.npy"
+  val:
+    batch_size: 20
+    path: "data/streetlearn/"
+    pairs_file: "metadata/streetlearn/test_pair_rotation.npy"
+
+viz:
+  log_freq: 10
+  viz_freq: 75000
+  save_freq: 30000
+  val_freq: 10000
+
+# validation options
+val:
+  run_val_during_training: True
+  save_val_results: False
+  eval_classification: False
+  eval_sampling: False
+  batch_size: 100
+
+trainer:
+  type: trainers.rotation_trainer
+  epochs: 20
+  seed: 100
+  pairwise_type: 'cost_volume'
+  classification: True
+  opt:
+    type: 'adam'
+    lr: 5e-4  #  use default learning rate
+    beta1: 0.9
+    beta2: 0.999
+    momentum: 0.9  # for SGD
+    weight_decay: 0.
+    scheduler: 'linear'
+    step_epoch: 10
+
+models:
+  encoder:
+    type: models.encoder.resunet_encoder
+    block: 1 # 0 basic, 1 bottleneck
+    num_blocks: 3-3-3
+    not_concat: True
+    num_out_layers: 32
+  rotationnet:
+    type: models.rotationnet.rotation_cv_net
+    block: 1 # 0 basic, 1 bottleneck
+    num_blocks: 1-1
+    zdim: 512
+    in_planes: 1024
+    width: 32
+    height: 32
+    out_rotation_mode: 'distribution'
+  rotationnet_y:
+    type: models.rotationnet.rotation_cv_net
+    block: 1 # 0 basic, 1 bottleneck
+    num_blocks: 1-1
+    zdim: 512
+    in_planes: 1024
+    width: 32
+    height: 32
+    out_rotation_mode: 'distribution'
+  rotationnet_z:
+    type: models.rotationnet.rotation_cv_net
+    block: 1 # 0 basic, 1 bottleneck
+    num_blocks: 1-1
+    zdim: 512
+    in_planes: 1024
+    width: 32
+    height: 32
+    out_rotation_mode: 'distribution'
+
+

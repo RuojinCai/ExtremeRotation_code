@@ -1,0 +1,3 @@
+[submodule "PanoBasic"]
+	path = PanoBasic
+	url = https://github.com/RuojinCai/PanoBasic.git
